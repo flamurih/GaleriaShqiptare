@@ -340,3 +340,138 @@ jQuery(function () {
     });  
 });
 
+const app = new PIXI.Application({
+  width: 800,
+  height: 600,
+});
+
+// Append the PixiJS view (canvas) to your HTML container
+document.getElementById('pixi-container').appendChild(app.view);
+
+// Create a video element
+const videoElement = document.createElement('video');
+videoElement.src = './assets/videos/video1.mp4';
+videoElement.loop = true;
+
+videoElement.width = app.renderer.width;
+videoElement.height = app.renderer.height;
+
+
+// Wait for the user interaction before playing the video
+document.addEventListener('click', () => {
+  // Play the video
+  videoElement.play().catch((error) => {
+    console.log('Failed to play the video:', error);
+  });
+}, { once: true });
+
+// Wait for the video to be loaded
+videoElement.addEventListener('loadedmetadata', () => {
+ // Calculate the video aspect ratio
+ const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight;
+
+ // Create a video texture from the video element
+ const videoTexture = PIXI.Texture.from(videoElement);
+
+ // Create a sprite using the video texture
+ const videoSprite = new PIXI.Sprite(videoTexture);
+
+ // Scale the sprite to maintain the video aspect ratio
+ if (videoAspectRatio > 1) {
+   videoSprite.width = app.renderer.width;
+   videoSprite.height = app.renderer.width / videoAspectRatio;
+ } else {
+   videoSprite.height = app.renderer.height;
+   videoSprite.width = app.renderer.height * videoAspectRatio;
+ }
+
+ // Center the video sprite
+ videoSprite.position.set(
+   (app.renderer.width - videoSprite.width) / 2,
+   (app.renderer.height - videoSprite.height) / 2
+ );
+
+ app.stage.addChild(videoSprite);
+
+ // Add animations within the PixiJS ticker update loop
+ app.ticker.add(() => {
+   // Animation logic here
+ });
+  // Create custom video controls
+  const playButton = document.createElement('button');
+  playButton.textContent = 'Play';
+
+  const pauseButton = document.createElement('button');
+  pauseButton.textContent = 'Pause';
+
+  const forwardButton = document.createElement('button');
+  forwardButton.textContent = 'Forward 5s';
+
+  const backwardButton = document.createElement('button');
+  backwardButton.textContent = 'Backward 5s';
+
+  const speedUpButton = document.createElement('button');
+  speedUpButton.textContent = 'Speed Up';
+
+  const slowDownButton = document.createElement('button');
+  slowDownButton.textContent = 'Slow Down';
+
+  const fullScreenButton = document.createElement('button');
+  fullScreenButton.textContent = 'Full Screen';
+
+
+  // Add event listeners to control buttons
+  playButton.addEventListener('click', () => {
+    videoElement.play();
+  });
+
+  pauseButton.addEventListener('click', () => {
+    videoElement.pause();
+  });
+
+  forwardButton.addEventListener('click', () => {
+    videoElement.currentTime += 5;
+  });
+
+  backwardButton.addEventListener('click', () => {
+    videoElement.currentTime -= 5;
+  });
+
+  speedUpButton.addEventListener('click', () => {
+    videoElement.playbackRate += 0.5;
+  });
+
+  slowDownButton.addEventListener('click', () => {
+    videoElement.playbackRate -= 0.5;
+  });
+
+  fullScreenButton.addEventListener('click', () => {
+    if (videoElement.requestFullscreen) {
+      videoElement.requestFullscreen();
+    } else if (videoElement.mozRequestFullScreen) {
+      videoElement.mozRequestFullScreen();
+    } else if (videoElement.webkitRequestFullscreen) {
+      videoElement.webkitRequestFullscreen();
+    } else if (videoElement.msRequestFullscreen) {
+      videoElement.msRequestFullscreen();
+    }
+  });
+
+
+  // Append control buttons to the HTML container
+  document.getElementById('controls').appendChild(playButton);
+  document.getElementById('controls').appendChild(pauseButton);
+  document.getElementById('controls').appendChild(forwardButton);
+  document.getElementById('controls').appendChild(backwardButton);
+  document.getElementById('controls').appendChild(speedUpButton);
+  document.getElementById('controls').appendChild(slowDownButton);
+  document.getElementById('controls').appendChild(fullScreenButton);
+});
+
+
+// Load the video element
+videoElement.load();
+
+
+
+

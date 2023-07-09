@@ -419,6 +419,8 @@ nav ul ul ul li {
     top: 0;
     left: 0;
 }
+
+
 .item-category {
     text-align: center;
     z-index: 1;
@@ -756,6 +758,7 @@ nav ul ul ul li {
 .post-info h3{
     margin-top: 0;
 }
+
 .date {
     position: relative;
     font-size: 6em;
